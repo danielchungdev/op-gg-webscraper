@@ -2,7 +2,7 @@
 <h2>About 🤖</h2>
 
 This script is a webscrapper for the website [op.gg](https://www.op.gg/). The script takes the top 100 players of each region and classifies them based on their 
-role.
+role, determines the strongest role in the current meta, and the champions with the most success.
 
 <h2>Contributor</h2>
 <ul> 

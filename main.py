@@ -38,14 +38,16 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
     page = urlopen(req)
     soup = BeautifulSoup(page, 'html.parser')
 
+    name = soup.find_all('span', class_="Name")
+    lp = soup.find_all('span', class_="LeaguePoints")
     mostplayed = soup.find('div', class_="MostChampionContent")
 
-    print("Starting player's most played")
+    print("Starting champions most played")
     for champion in mostplayed.find_all("div", class_="ChampionName"):
         champions.append(str(champion.text).strip())
     print("Ending champion most played")
 
-    print("Analizing player's champions")
+    print("Analysis of " + name + "'s Champions")
     for champion in champions:
         if champion in tops:
             roles['TOP'] += 1
@@ -57,7 +59,7 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
             roles['ADC'] += 1
         if champion in supp:
             roles['SUPP'] += 1
-    print("Ending player's analization")
+    print("Ending " + name + "'s analysis")
 
     main_position = max(roles, key=roles.get)
     return main_position
@@ -134,7 +136,7 @@ def main():
             players_by_position["ADC"].append(player)
         if position == "SUPP":
             players_by_position["SUPP"].append(player)
-
+    main_position = max(players_by_position, key=players_by_position.get)
     print(players_by_position)
     print(len(players))
 

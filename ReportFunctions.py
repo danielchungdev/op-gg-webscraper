@@ -7,7 +7,7 @@ Date: 1/1/2021
 
 
 def write_report(players_by_position):
-    with open("results.txt", "w", encoding='utf-8') as f:
+    with open("report.txt", "w", encoding='utf-8') as f:
         f.write("Report of op.gg leaderboards for all regions \n")
         f.write("\n")
         for position in players_by_position:

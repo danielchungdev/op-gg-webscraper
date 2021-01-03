@@ -50,7 +50,8 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
     if name[0] == "[":
         name = name[1:-1]
     lp = soup.find('span', class_="LeaguePoints").text
-    lp = lp.strip(" ")[0]
+    lp = lp.strip().replace(",", "")[:-2]
+    print(lp + " lp here")
     region = soup.find('span', class_="gnb-list-item__title").text
     mostplayed = soup.find('div', class_="MostChampionContent")
 
@@ -144,6 +145,8 @@ def main():
         summoner = classify_players(player, tops, jgs, mid, adc, supp)
         summoners_list.append(summoner)
         print(player + " position is: " + summoner.position)
+        print(player + " lp is: " + summoner.lp)
+
         if summoner.position == "TOP":
             players_by_position["TOP"].append(summoner)
         if summoner.position == "JG":

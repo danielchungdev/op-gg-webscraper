@@ -51,7 +51,6 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
         name = name[1:-1]
     lp = soup.find('span', class_="LeaguePoints").text
     lp = lp.strip().replace(",", "")[:-2]
-    print(lp + " lp here")
     region = soup.find('span', class_="gnb-list-item__title").text
     mostplayed = soup.find('div', class_="MostChampionContent")
 
@@ -59,8 +58,6 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
     for champion in mostplayed.find_all("div", class_="ChampionName"):
         champions.append(str(champion.text).strip())
     print("Ending champion most played")
-
-    print("Analysis of " + name + "'s Champions")
     for champion in champions:
         if champion in tops:
             roles['TOP'] += 1
@@ -72,7 +69,6 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
             roles['ADC'] += 1
         if champion in supp:
             roles['SUPP'] += 1
-    print("Ending " + name + "'s analysis")
 
     main_position = max(roles, key=roles.get)
 
@@ -136,7 +132,7 @@ def main():
         ninety_five = soup.find_all('tr', class_='ranking-table__row')
 
         players_links = add_top_five(top_five, players_links)
-        # players_links = add_rest(ninety_five, players_links)
+        players_links = add_rest(ninety_five, players_links)
 
     players_by_position = {"TOP": [], "JG": [], "MID": [], "ADC": [], "SUPP": []}
 
@@ -145,7 +141,6 @@ def main():
         summoner = classify_players(player, tops, jgs, mid, adc, supp)
         summoners_list.append(summoner)
         print(player + " position is: " + summoner.position)
-        print(player + " lp is: " + summoner.lp)
 
         if summoner.position == "TOP":
             players_by_position["TOP"].append(summoner)

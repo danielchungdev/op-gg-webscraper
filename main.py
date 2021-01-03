@@ -1,5 +1,6 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
+from Summoner import Summoner
 
 """
 :param lane = "TOP", "JUNGLE", "MID", "ADC", "SUPPORT"
@@ -37,9 +38,10 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
     req = Request(URL, headers=hdr)
     page = urlopen(req)
     soup = BeautifulSoup(page, 'html.parser')
-
-    name = soup.find_all('span', class_="Name")
-    lp = soup.find_all('span', class_="LeaguePoints")
+    name = soup.find('span', class_="Name").text
+    lp = soup.find('span', class_="LeaguePoints").text
+    lp = lp.strip(" ")[0]
+    region = soup.find('span', class_="gnb-list-item__title").text
     mostplayed = soup.find('div', class_="MostChampionContent")
 
     print("Starting champions most played")
@@ -62,7 +64,10 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
     print("Ending " + name + "'s analysis")
 
     main_position = max(roles, key=roles.get)
-    return main_position
+
+    summoner = Summoner(profile_link, name, main_position, lp, region)
+
+    return summoner
 
 """
 :param top_five = <class 'bs4.element.ResultSet'>
@@ -98,9 +103,10 @@ def add_rest(ninety_five, players):
 
 def main():
     print("Start")
-    players = []
-
-    regions = ["na", "lan", "las", "jp", "www", "eune", "oce", "ru", "br", "tr", "euw"]
+    players_links = []
+    summoners_list = []
+    # regions = ["na", "lan", "las", "jp", "www", "eune", "oce", "ru", "br", "tr", "euw"]
+    regions = ["na"] #singleTest
 
     tops = get_champions("TOP")
     jgs = get_champions("JUNGLE")
@@ -118,26 +124,31 @@ def main():
         top_five = soup.find_all('li', class_='ranking-highest__item')
         ninety_five = soup.find_all('tr', class_='ranking-table__row')
 
-        players = add_top_five(top_five, players)
-        players = add_rest(ninety_five, players)
+        players_links = add_top_five(top_five, players_links)
+        players_links = add_rest(ninety_five, players_links)
 
     players_by_position = {"TOP": [], "JG": [], "MID": [], "ADC": [], "SUPP": []}
 
-    for player in players:
-        position = classify_players(player, tops, jgs, mid, adc, supp)
-        print(player + " position is: " + position)
-        if position == "TOP":
+    for player in players_links:
+        print("\n")
+        summoner = classify_players(player, tops, jgs, mid, adc, supp)
+        summoners_list.append(summoner)
+        print(player + " position is: " + summoner.position)
+        if summoner.position == "TOP":
             players_by_position["TOP"].append(player)
-        if position == "JG":
+        if summoner.position == "JG":
             players_by_position["JG"].append(player)
-        if position == "MID":
+        if summoner.position == "MID":
             players_by_position["MID"].append(player)
-        if position == "ADC":
+        if summoner.position == "ADC":
             players_by_position["ADC"].append(player)
-        if position == "SUPP":
+        if summoner.position == "SUPP":
             players_by_position["SUPP"].append(player)
-    main_position = max(players_by_position, key=players_by_position.get)
+
+    most_op_position = max(players_by_position, key=players_by_position.get)
+
+    print(most_op_position)
     print(players_by_position)
-    print(len(players))
+    print(len(players_links))
 
 main()

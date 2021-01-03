@@ -4,11 +4,23 @@ File: ReportFunctions.py
 By: Daniel Chung
 Date: 1/1/2021
 """
+def most_played_position(players_by_position):
+    most_played = "TOP"
 
+    for position in players_by_position:
+        if len(players_by_position[position]) > len(players_by_position[most_played]):
+            most_played = position
+
+    return most_played
 
 def write_report(players_by_position):
+
+    most_played = most_played_position(players_by_position)
+
     with open("report.txt", "w", encoding='utf-8') as f:
         f.write("Report of op.gg leaderboards for all regions \n")
+        f.write("\n")
+        f.write("Most played position: " + most_played)
         f.write("\n")
         for position in players_by_position:
             if position == "TOP":

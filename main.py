@@ -112,8 +112,8 @@ def main():
     print("Start")
     players_links = []
     summoners_list = []
-    # regions = ["na", "lan", "las", "jp", "www", "eune", "oce", "ru", "br", "tr", "euw"]
-    regions = ["na"] #singleTest
+    regions = ["na", "lan", "las", "jp", "www", "eune", "oce", "ru", "br", "tr", "euw"]
+    # regions = ["na"] #singleTest
 
     tops = get_champions("TOP")
     jgs = get_champions("JUNGLE")

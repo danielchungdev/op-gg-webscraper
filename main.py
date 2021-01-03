@@ -1,6 +1,14 @@
+"""
+OP-GG Webscrapper and Player Analizer.
+File: Main.py
+By: Daniel Chung
+Date: 1/1/2021
+"""
+
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from Summoner import Summoner
+from ReportFunctions import write_report
 
 """
 :param lane = "TOP", "JUNGLE", "MID", "ADC", "SUPPORT"
@@ -39,6 +47,8 @@ def classify_players(profile_link, tops, jgs, mid, adc, supp):
     page = urlopen(req)
     soup = BeautifulSoup(page, 'html.parser')
     name = soup.find('span', class_="Name").text
+    if name[0] == "[":
+        name = name[1:-1]
     lp = soup.find('span', class_="LeaguePoints").text
     lp = lp.strip(" ")[0]
     region = soup.find('span', class_="gnb-list-item__title").text
@@ -125,7 +135,7 @@ def main():
         ninety_five = soup.find_all('tr', class_='ranking-table__row')
 
         players_links = add_top_five(top_five, players_links)
-        players_links = add_rest(ninety_five, players_links)
+        # players_links = add_rest(ninety_five, players_links)
 
     players_by_position = {"TOP": [], "JG": [], "MID": [], "ADC": [], "SUPP": []}
 
@@ -135,20 +145,17 @@ def main():
         summoners_list.append(summoner)
         print(player + " position is: " + summoner.position)
         if summoner.position == "TOP":
-            players_by_position["TOP"].append(player)
+            players_by_position["TOP"].append(summoner)
         if summoner.position == "JG":
-            players_by_position["JG"].append(player)
+            players_by_position["JG"].append(summoner)
         if summoner.position == "MID":
-            players_by_position["MID"].append(player)
+            players_by_position["MID"].append(summoner)
         if summoner.position == "ADC":
-            players_by_position["ADC"].append(player)
+            players_by_position["ADC"].append(summoner)
         if summoner.position == "SUPP":
-            players_by_position["SUPP"].append(player)
+            players_by_position["SUPP"].append(summoner)
 
-    most_op_position = max(players_by_position, key=players_by_position.get)
+    write_report(players_by_position)
 
-    print(most_op_position)
-    print(players_by_position)
-    print(len(players_links))
-
-main()
+if __name__ == '__main__':
+    main()
